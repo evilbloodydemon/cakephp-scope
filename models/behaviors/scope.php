@@ -1,14 +1,16 @@
 <?php
 
 class ScopeBehavior extends ModelBehavior {
-	private $_settings = array();
-
 	function setup($model, $settings = array()) {
-		$this->_settings[$model->alias] = $settings;
+		if(!isset($settings['field']) || !isset($settings['value'])) {
+			$error = sprintf('ScopeBehavior: invalid params for model %s', $model->alias);
+			trigger_error($error, E_USER_WARNING);
+		}
+		$this->settings[$model->alias] = $settings;
 	}
 
 	function beforeFind($model, $query) {
-		$options = $this->_settings[$model->alias];
+		$options = $this->settings[$model->alias];
 		$conditions = array(
 			"{$model->alias}.{$options['field']}" => $options['value'],
 		);
@@ -18,7 +20,7 @@ class ScopeBehavior extends ModelBehavior {
 	}
 
 	function beforeSave($model) {
-		$options = $this->_settings[$model->alias];
+		$options = $this->settings[$model->alias];
 		$model->data[$model->alias][$options['field']] = $options['value'];
 
 		return true;

@@ -23,6 +23,24 @@ class ScopeTest extends CakeTestCase {
 		ClassRegistry::flush();
 	}
 
+	function testErrorWithInvalidParams() {
+		$this->expectError();
+		$this->User->Behaviors->attach('Scope.Scope');
+		$this->User->Behaviors->detach('Scope');
+
+		$this->expectError();
+		$this->User->Behaviors->attach('Scope.Scope', array(
+			'field' => 'site_id',
+		));
+		$this->User->Behaviors->detach('Scope');
+
+		$this->expectError();
+		$this->User->Behaviors->attach('Scope.Scope', array(
+			'value' => 1,
+		));
+		$this->User->Behaviors->detach('Scope');
+	}
+
 	function testFindScoped() {
 		$this->User->Behaviors->attach('Scope.Scope', array(
 			'field' => 'site_id',
