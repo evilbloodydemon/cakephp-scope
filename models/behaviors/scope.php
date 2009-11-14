@@ -16,4 +16,11 @@ class ScopeBehavior extends ModelBehavior {
 		$query['conditions'] = Set::merge($query['conditions'], $conditions);
 		return $query;
 	}
+
+	function beforeSave($model) {
+		$options = $this->_settings[$model->alias];
+		$model->data[$model->alias][$options['field']] = $options['value'];
+
+		return true;
+	}
 }
